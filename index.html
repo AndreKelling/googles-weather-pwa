@@ -38,7 +38,7 @@
   <header class="header">
     <h1 class="header__title">Weather PWA</h1>
     <button id="butRefresh" class="headerButton" aria-label="Refresh"></button>
-    <button id="butAdd" class="headerButton" aria-label="Add"></button>
+    <button id="butAdd" class="butAdd headerButton" aria-label="Add"></button>
   </header>
 
   <main class="main">
@@ -147,29 +147,25 @@
       <div class="dialog-body">
         <select id="selectCityToAdd">
           <!-- Values map to Yahoo Weather API Where On Earth Identifiers (WOEIDs).
-               https://developer.yahoo.com/weather/documentation.html#req -->
-          <option value="676757">München, DE</option>
-          <option value="638242">Berlin, DE</option>
-          <option value="2357536">Austin, TX</option>
-          <option value="2367105">Boston, MA</option>
-          <option value="2379574">Chicago, IL</option>
-          <option value="2459115">New York, NY</option>
-          <option value="2475687">Portland, OR</option>
-          <option value="2487956">San Francisco, CA</option>
-          <option value="2490383">Seattle, WA</option>
+               https://developer.yahoo.com/weather/documentation.html#req
+              get new ID's http://woeid.rosselliot.co.nz/ -->
+          <option value="638242">Berlin</option>
+          <option value="12832102">KW</option>
+          <option value="676757">München</option>
+          <option value="645686">Dresden</option>
         </select>
       </div>
       <div class="dialog-buttons">
-        <button id="butAddCity" class="button">Add</button>
-        <button id="butAddCancel" class="button">Cancel</button>
+        <button id="butAddCity" class="mdl-button">Add</button>
+        <button id="butAddCancel" class="mdl-button">Cancel</button>
       </div>
     </div>
   </div>
 
-  <div class="loader">
-    <svg viewBox="0 0 32 32" width="32" height="32">
-      <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
-    </svg>
+  <div class="add-city loader">
+    <button id="butAdd2" class="mdl-button mdl-button--primary">
+      Add new City
+    </button>
   </div>
 
 <script src="scripts/app.js" async></script>
