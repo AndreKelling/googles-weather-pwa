@@ -20,7 +20,7 @@
     isLoading: true,
     visibleCards: {},
     selectedCities: [],
-    spinner: document.querySelector('.loader'),
+    noCities: document.querySelector('.add-city'),
     cardTemplate: document.querySelector('.cardTemplate'),
     container: document.querySelector('.main'),
     addDialog: document.querySelector('.dialog-container'),
@@ -49,14 +49,23 @@
     app.toggleAddDialog(true);
   });
 
+  document.getElementById('butClear').addEventListener('click', function() {
+    app.clearSelectedCities();
+    location.reload();
+    // @todo: reset cards without reload
+    //document.querySelectorAll(".card--city").forEach(e => e.parentNode.removeChild(e));
+    //app.noCities.removeAttribute('hidden');
+  });
+
   document.getElementById('butAddCity').addEventListener('click', function() {
     // Add the newly selected city
     var select = document.getElementById('selectCityToAdd');
     var selected = select.options[select.selectedIndex];
     var key = selected.value;
     var label = selected.textContent;
-    if (!app.selectedCities) {
+    if (!localStorage["selectedCities"]) {
       app.selectedCities = [];
+      console.log('no local storage for cities yet');
     }
     app.getForecast(key, label);
     app.selectedCities.push({key: key, label: label});
@@ -96,9 +105,11 @@
     var wind = data.channel.wind;
 
     var card = app.visibleCards[data.key];
+
     if (!card) {
       card = app.cardTemplate.cloneNode(true);
       card.classList.remove('cardTemplate');
+      card.classList.add('card--city');
       card.querySelector('.location').textContent = data.label;
       card.removeAttribute('hidden');
       app.container.appendChild(card);
@@ -148,8 +159,7 @@
       }
     }
     if (app.isLoading) {
-      app.spinner.setAttribute('hidden', true);
-      app.container.removeAttribute('hidden');
+      app.noCities.setAttribute('hidden', true);
       app.isLoading = false;
     }
   };
@@ -170,7 +180,6 @@
    * freshest data.
    */
   app.getForecast = function(key, label) {
-    var useFakedata = false;
     var statement = 'select * from weather.forecast where woeid=' + key + ' and u="c"';
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' +
         statement;
@@ -193,9 +202,7 @@
           });
         }
       });
-    } else {
-      var useFakedata = true;
-    }
+    } 
 
     // Fetch the latest data.
     var request = new XMLHttpRequest();
@@ -229,6 +236,11 @@
   app.saveSelectedCities = function() {
     var selectedCities = JSON.stringify(app.selectedCities);
     localStorage.selectedCities = selectedCities;
+  };
+
+  // Clear list of cities from localStorage.
+  app.clearSelectedCities = function() {
+    window.localStorage.removeItem('selectedCities');
   };
 
   app.getIconClass = function(weatherCode) {
