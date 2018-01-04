@@ -165,6 +165,7 @@
    * freshest data.
    */
   app.getForecast = function(key, label) {
+    var useFakedata = false;
     var statement = 'select * from weather.forecast where woeid=' + key + ' and u="c"';
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' +
         statement;
@@ -178,6 +179,7 @@
       caches.match(url).then(function(response) {
         if (response) {
           response.json().then(function updateFromCache(json) {
+            console.log('get forecast from cache');
             var results = json.query.results;
             results.key = key;
             results.label = label;
@@ -186,13 +188,17 @@
           });
         }
       });
+    } else {
+      var useFakedata = true;
     }
 
     // Fetch the latest data.
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
+      console.log('try to get forecast');
       if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status === 200) {
+          console.log('get forecast from network');
           var response = JSON.parse(request.response);
           var results = response.query.results;
           results.key = key;
@@ -200,9 +206,9 @@
           results.created = response.query.created;
           app.updateForecastCard(results);
         }
-      } else {
+      } else if (useFakedata) {
         // Return the initial weather forecast since no data is available.
-        console.log('gone wrong here');
+        console.log('get forecast from fakedata');
         app.updateForecastCard(initialWeatherForecast);
       }
     };
