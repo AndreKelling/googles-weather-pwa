@@ -1,5 +1,5 @@
 var dataCacheName = 'weatherData-v1';
-var cacheName = 'weatherPWA-v2';
+var cacheName = 'weatherPWA-v1';
 var filesToCache = [
     '/',
     '/index.html',
@@ -22,12 +22,12 @@ var filesToCache = [
 
 self.addEventListener('install', function(e) {
   console.log('[ServiceWorker] Install');
-  e.waitUntil(
+  e.waitUntil(async function() {
     caches.open(cacheName).then(function(cache) {
-      console.log('[ServiceWorker] Caching app shell');
-      return cache.addAll(filesToCache);
-    })
-  );
+        console.log('[ServiceWorker] Caching app shell');
+        return cache.addAll(filesToCache);
+      })
+  });
 });
 
 self.addEventListener('activate', function(e) {
